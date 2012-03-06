@@ -27,9 +27,12 @@ function pg_parse($arraystring, $reset=true)
     $work = array();
     $curr = '';
     $length = strlen($arraystring);
+    $count = 0;
 
     while ($i < $length)
     {
+        // echo "\n [ $i ] ..... $arraystring[$i] .... $curr";
+
         switch ($arraystring[$i])
         {
         case '{':
@@ -44,8 +47,28 @@ function pg_parse($arraystring, $reset=true)
             return $work;
             break;
         case '\\':
-        case '"':
             $i++;
+            $curr .= $arraystring[$i];
+            $i++;
+            break;
+        case '"':
+            $openq = $i;
+            do {
+                $closeq = strpos($arraystring, '"' , $i + 1);
+                if ($closeq > $openq && $arraystring[$closeq - 1] == '\\') {
+                    $i = $closeq + 1;
+                } else {
+                    break;
+                }
+            } while(true);
+
+            if ($closeq <= $openq) {
+                die;
+            }
+
+            $curr .= substr($arraystring, $openq + 1, $closeq - ($openq + 1));
+
+            $i = $closeq + 1;
             break;
         case ',':
             if (!empty($curr)) $work[$indexer++] = $curr;
