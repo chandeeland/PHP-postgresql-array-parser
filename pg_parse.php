@@ -22,6 +22,11 @@ function pg_parse($arraystring, $reset=true)
     if ($arraystring[$i] != '{') {
         return NULL;
     }
+    
+    if (is_array($arraystring)) return $arraystring;
+
+    // handles btyea and blob binary streams
+    if (is_resource($arraystring)) return fread($arraystring, 4096);
 
     $i++;
     $work = array();
