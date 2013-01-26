@@ -68,7 +68,7 @@ function pg_parse($arraystring, $reset=true)
             } while(true);
 
             if ($closeq <= $openq) {
-                die;
+                throw new Exception('Unexpected condition');
             }
 
             $curr .= substr($arraystring, $openq + 1, $closeq - ($openq + 1));
