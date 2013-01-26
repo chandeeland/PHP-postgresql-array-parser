@@ -61,7 +61,7 @@ function pg_parse($arraystring, $reset=true)
             do {
                 $closeq = strpos($arraystring, '"' , $i + 1);
                 if ($closeq > $openq && $arraystring[$closeq - 1] == '\\') {
-                    $i = $closeq + 1;
+                    $i = $closeq;
                 } else {
                     break;
                 }
