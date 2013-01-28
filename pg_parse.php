@@ -76,7 +76,10 @@ function pg_parse($arraystring, $reset=true)
             $i = $closeq + 1;
             break;
         case ',':
-            if (!empty($curr)) $work[$indexer++] = $curr;
+            if (!empty($curr)){
+                if ($curr == 'NULL') $curr = null;
+                $work[$indexer++] = $curr;
+            }
             $curr = '';
             $i++;
             break;
