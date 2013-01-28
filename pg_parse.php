@@ -61,14 +61,14 @@ function pg_parse($arraystring, $reset=true)
             do {
                 $closeq = strpos($arraystring, '"' , $i + 1);
                 if ($closeq > $openq && $arraystring[$closeq - 1] == '\\') {
-                    $i = $closeq + 1;
+                    $i = $closeq;
                 } else {
                     break;
                 }
             } while(true);
 
             if ($closeq <= $openq) {
-                die;
+                throw new Exception('Unexpected condition');
             }
 
             $curr .= substr($arraystring, $openq + 1, $closeq - ($openq + 1));
