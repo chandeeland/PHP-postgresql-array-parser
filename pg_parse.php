@@ -33,6 +33,7 @@ function pg_parse($arraystring, $reset=true)
     $curr = '';
     $length = strlen($arraystring);
     $count = 0;
+    $quoted = false;
 
     while ($i < $length)
     {
@@ -57,6 +58,7 @@ function pg_parse($arraystring, $reset=true)
             $i++;
             break;
         case '"':
+            $quoted = true;
             $openq = $i;
             do {
                 $closeq = strpos($arraystring, '"' , $i + 1);
@@ -76,11 +78,12 @@ function pg_parse($arraystring, $reset=true)
             $i = $closeq + 1;
             break;
         case ',':
-            if (!empty($curr)){
-                if ($curr == 'NULL') $curr = null;
+            if (strlen($curr) > 0){
+                if (!$quoted && (strtoupper($curr) == 'NULL')) $curr = null;
                 $work[$indexer++] = $curr;
             }
             $curr = '';
+            $quoted = false;
             $i++;
             break;
         default:
