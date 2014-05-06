@@ -49,7 +49,7 @@ function pg_parse($arraystring, $reset=true)
             break;
         case '}':
             $i++;
-            if (!empty($curr)) $work[$indexer++] = $curr;
+            if (strlen($curr) > 0) $work[$indexer++] = $curr;
             return $work;
             break;
         case '\\':
