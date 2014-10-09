@@ -21,6 +21,7 @@ $samples = array(
     '{xyz,"abc}d\\"ef"}',
     '{xyz,"ab{\"meeting\",\"lunch\"}"}',
     '{xyz,\{hello\},"a{b},{c}"}',
+    '{xyz,"foo\\\\"}'
 );
 
 foreach ($samples as $x) {

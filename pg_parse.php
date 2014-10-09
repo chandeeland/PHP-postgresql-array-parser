@@ -6,7 +6,7 @@
  * @author dchan@sigilsoftware.com
  */
 function pg_parse($arraystring, $reset=true)
-{ 
+{
     static $i = 0;
     if ($reset) $i = 0;
 
@@ -17,12 +17,12 @@ function pg_parse($arraystring, $reset=true)
     if (preg_match('/^\[(?P<index_start>\d+):(?P<index_end>\d+)]=/', substr($arraystring, $i), $matches)) {
         $indexer = (int)$matches['index_start'];
         $i = strpos($arraystring, '{');
-    } 
-    
+    }
+
     if ($arraystring[$i] != '{') {
         return NULL;
     }
-    
+
     if (is_array($arraystring)) return $arraystring;
 
     // handles btyea and blob binary streams
@@ -35,12 +35,10 @@ function pg_parse($arraystring, $reset=true)
     $count = 0;
     $quoted = false;
 
-    while ($i < $length)
-    {
+    while ($i < $length) {
         // echo "\n [ $i ] ..... $arraystring[$i] .... $curr";
 
-        switch ($arraystring[$i])
-        {
+        switch ($arraystring[$i]) {
         case '{':
             $sub = pg_parse($arraystring, false);
             if(!empty($sub)) {
@@ -62,7 +60,10 @@ function pg_parse($arraystring, $reset=true)
             $openq = $i;
             do {
                 $closeq = strpos($arraystring, '"' , $i + 1);
-                if ($closeq > $openq && $arraystring[$closeq - 1] == '\\') {
+                $escaped = $closeq > $openq &&
+                    preg_match('/(\\\\+)$/', substr($arraystring, $openq + 1, $closeq - ($openq + 1)), $matches) &&
+                    (strlen($matches[1])%2);
+                if ($escaped) {
                     $i = $closeq;
                 } else {
                     break;
@@ -91,5 +92,7 @@ function pg_parse($arraystring, $reset=true)
             $i++;
         }
     }
+
+    throw new Exception('Unexpected line end');
 }
 
